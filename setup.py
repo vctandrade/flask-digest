@@ -10,8 +10,9 @@ setup(
 
     description = 'A RESTful authorization feature for Flask applications',
     long_description = open('README.rst').read(),
-    license = 'The MIT License (MIT)',
+    license = 'MIT',
 
+    platforms = ['Platform Independent'],
     install_requires = ['Flask >= 0.10.1'],
     packages = find_packages(),
 

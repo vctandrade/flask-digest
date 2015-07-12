@@ -14,8 +14,8 @@ def add_user(username, password):
 def get_user(username):
     return db.get(username, None)
 
-@app.protect('/')
-@stomach.secure
+@app.route('/')
+@stomach.protect
 def main():
     return '<h1> resource <h1>'
 

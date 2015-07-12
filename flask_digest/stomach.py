@@ -9,12 +9,6 @@ from hasher import digest, hash_all
 from challenge import Challenge
 from cleaning import Maid
 
-#TODO log attacks
-#TODO implement auth-int
-#TODO add Authentication-Info
-#TODO per resource permission
-#TODO allow blueprints and views
-
 class Token(object):
     def __init__(self):
         self.IP = request.remote_addr
