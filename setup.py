@@ -8,7 +8,7 @@ setup(
     author_email = 'vct.a.almeida@gmail.com',
     url = 'https://github.com/vctandrade/flask-digest',
 
-    description = 'A RESTful authorization feature for Flask applications',
+    description = 'A RESTful authentication service for Flask applications',
     long_description = open('README.rst').read(),
     license = 'MIT',
 
@@ -16,7 +16,7 @@ setup(
     install_requires = ['Flask >= 0.10.1'],
     packages = find_packages(),
 
-    keywords = ['digest', 'authorization', 'flask'],
+    keywords = ['digest', 'authentication', 'flask'],
     classifiers = [
         'Development Status :: 3 - Alpha',
         'Environment :: Web Environment',
