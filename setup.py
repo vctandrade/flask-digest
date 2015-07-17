@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'Flask-Digest',
-    version = '0.1.0',
+    version = '0.1.1',
 
     author = 'Victor Andrade de Almeida',
     author_email = 'vct.a.almeida@gmail.com',

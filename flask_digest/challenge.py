@@ -1,21 +1,20 @@
-from werkzeug.exceptions import HTTPException
-from werkzeug import Response, WWWAuthenticate
+from werkzeug.exceptions import Unauthorized
+from werkzeug import WWWAuthenticate
 
-class Challenge(HTTPException):
-    code = 401
-    description = '''
-        <h1> Challenge </h1>
-        To gain access to this resource, you must first provide the server with your credentials.
-        If they already were provided, make sure your validation token hasn't expired.
-    '''
+class Challenge(Unauthorized):
 
     def __init__(self, stomach, stale=False):
-        self.www_authenticate = WWWAuthenticate()
-        self.www_authenticate.set_digest(stomach.realm, stomach.gen_nonce(), [stomach.qop], stale=stale)
-        self.www_authenticate = self.www_authenticate.to_header()
+        Unauthorized.__init__(self)
+
+        realm = stomach.realm
+        nonce = stomach.gen_nonce()
+        qop = [stomach.qop]
+
+        self.challenge = WWWAuthenticate()
+        self.challenge.set_digest(realm, nonce, qop, stale)
 
     def get_response(self, environ=None):
-        response = Response(self.description, self.code, content_type='html')
+        response = Unauthorized.get_response(self)
         response.headers['Access-Control-Expose-Headers'] = 'WWW-Authenticate'
-        response.headers['WWW-Authenticate'] = self.www_authenticate
+        response.headers['WWW-Authenticate'] = self.challenge.to_header()
         return response

@@ -1,8 +1,8 @@
-import hashlib
+from hashlib import md5
 
 def hash_all(*args):
     strings = map(str, args)
-    hashed = hashlib.md5(':'.join(strings))
+    hashed = md5(':'.join(strings))
     return hashed.hexdigest()
 
 def digest(request, hA1):
