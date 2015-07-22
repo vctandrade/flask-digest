@@ -20,11 +20,12 @@ class Token(object):
 
 class Stomach(object):
 
-    def __init__(self, realm):
-        self.realm = realm
+    def __init__(self, realm, auth_int=False):
         self.tokens = dict()
         self.clean = Maid()
-        self.qop = 'auth'
+        self.realm = realm
+
+        self.qop = 'auth-int' if auth_int else 'auth'
 
     def access(self, func):
         self.get_key = func
@@ -47,9 +48,19 @@ class Stomach(object):
     def get_key(self, username):
         return None
 
+    def gen_nonce(self):
+        while True:
+            nonce = urandom(8).encode('hex')
+            if nonce not in self.tokens: break
+            if self.tokens[nonce].stale(): break
+
+        self.tokens[nonce] = Token()
+        self.clean(self.tokens)
+        return nonce
+
     def authenticate(self):
         auth = request.authorization
-        if auth is None: raise Challenge(self, stale=False)
+        if auth is None: raise Challenge(self)
 
         self.check_header(auth)
         self.check_nonce(auth)
@@ -57,17 +68,8 @@ class Stomach(object):
         hash_pass = self.get_key(auth.username)
         if hash_pass is None: raise Unauthorized()
 
-        if auth.response != digest(request, hash_pass):
+        if auth.response != digest(hash_pass, auth):
             raise Unauthorized()
-
-    def gen_nonce(self):
-        while True:
-            nonce = urandom(8).encode('hex')
-            if nonce not in self.tokens: break
-            if self.tokens[nonce].stale(): break
-        self.tokens[nonce] = Token()
-        self.clean(self.tokens)
-        return nonce
 
     def check_header(self, auth):
         uri = request.path
@@ -77,7 +79,7 @@ class Stomach(object):
         bad_uri = auth.uri != uri
         bad_qop = str(auth.qop) != self.qop
 
-        incomplete = any(param == None for param in [
+        incomplete = any(param is None for param in [
             auth.response, auth.username,
             auth.nonce, auth.cnonce, auth.nc,
             auth.uri, auth.qop
@@ -87,15 +89,10 @@ class Stomach(object):
             raise BadRequest()
 
     def check_nonce(self, auth):
-        nonce = auth.nonce
         nc = int(auth.nc, 16)
         IP = request.remote_addr
+        token = self.tokens.get(auth.nonce, None)
 
-        if nonce in self.tokens and self.tokens[nonce].stale():
-            del self.tokens[nonce]
-        token = self.tokens.get(nonce, None)
-
-        if token == None: raise Challenge(self, stale=True)
-        if IP != token.IP: raise Unauthorized()
-        if nc <= token.nc: raise Unauthorized()
+        if token is None or token.stale(): raise Challenge(self, True)
+        if IP != token.IP or nc <= token.nc: raise Unauthorized()
         token.nc = nc

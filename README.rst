@@ -3,10 +3,10 @@ Flask Digest |license| |pypi|
 #############################
 
 .. |license| image:: https://img.shields.io/pypi/l/Flask-Digest.svg?style=flat-square
-  :target: https://github.com/vctandrade/flask-digest/blob/master/LICENSE.txt
+   :target: https://github.com/vctandrade/flask-digest/blob/master/LICENSE.txt
 
 .. |pypi| image:: https://img.shields.io/pypi/v/Flask-Digest.svg?style=flat-square
-  :target: https://pypi.python.org/pypi/Flask-Digest
+   :target: https://pypi.python.org/pypi/Flask-Digest
 
 Flask Digest provides a RESTful way of authenticating users using a Flask
 application. To achieve that, it uses the Digest Access Authentication protocol
@@ -25,7 +25,7 @@ First of all, installation is as simple as:
 
 .. code-block:: console
 
-  $ pip install flask-digest
+   $ pip install flask-digest
 
 After doing that, it's important to note this module is
 implementation-independent of how the user database is handled and accessed. So
@@ -43,29 +43,29 @@ identify your server in a unique fashion:
 
 .. code-block:: python
 
-  from flask import Flask
-  from flask_digest import Stomach
+   from flask import Flask
+   from flask_digest import Stomach
 
-  app = Flask(__name__)
-  stomach = Stomach('myRealm')
+   app = Flask(__name__)
+   stomach = Stomach('myRealm')
 
-  db = dict()
+   db = dict()
 
-  @stomach.register
-  def add_user(username, password):
-      db[username] = password
+   @stomach.register
+   def add_user(username, password):
+       db[username] = password
 
-  @stomach.access
-  def get_user(username):
-      return db.get(username, None)
+   @stomach.access
+   def get_user(username):
+       return db.get(username, None)
 
-  @app.route('/')
-  @stomach.protect
-  def main():
-      return '<h1> resource <h1>'
+   @app.route('/')
+   @stomach.protect
+   def main():
+       return '<h1> resource <h1>'
 
-  add_user('admin', '12345')
-  app.run()
+   add_user('admin', '12345')
+   app.run()
 
 Keep in mind that the ``protect`` decorator MUST be located between the chosen
 method and Flask's ``route`` decorator.
@@ -138,13 +138,13 @@ instead an already hashed form of it when you call the method marked by the
 The result is that, using Flask Digest, you'll be protected against the
 following attacks:
 
-* **Replay**: the request is intercepted and reproduced in the future.
-* **Reflection**: attacker repasses the server's challenge to the user.
-* **Criptoanalysis**:
+* **Replay**: the request is intercepted and reproduced in the future
+* **Reflection**: attacker repasses the server's challenge to the user
+* **Criptoanalysis**
 
-  * **Chosen plaintext**: malicious server chooses the ``nonce``.
-  * **Precomputed dictionary**: precomputed version of the above.
-  * **Batch brute force**: chosen plain text on multiple users at once.
+  * **Chosen plaintext**: malicious server chooses the ``nonce``
+  * **Precomputed dictionary**: precomputed version of the above
+  * **Batch brute force**: chosen plain text on multiple users at once
 
 **Man-in-the-middle attacks**, ie. intercept and modify requests, are also
 prevented regarding the request URIs, but until ``auth-int`` is implemented
