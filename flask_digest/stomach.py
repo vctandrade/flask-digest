@@ -20,12 +20,11 @@ class Token(object):
 
 class Stomach(object):
 
-    def __init__(self, realm, auth_int=False):
+    def __init__(self, realm):
         self.tokens = dict()
         self.clean = Maid()
         self.realm = realm
-
-        self.qop = 'auth-int' if auth_int else 'auth'
+        self.qop = 'auth'
 
     def access(self, func):
         self.get_key = func
@@ -68,7 +67,7 @@ class Stomach(object):
         hash_pass = self.get_key(auth.username)
         if hash_pass is None: raise Unauthorized()
 
-        if auth.response != digest(hash_pass, auth):
+        if auth.response != digest(hash_pass):
             raise Unauthorized()
 
     def check_header(self, auth):
