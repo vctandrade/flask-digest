@@ -18,7 +18,7 @@ following well known protocols.
 
 .. _RFC 2617: https://www.ietf.org/rfc/rfc2617.txt
 
-Quickstart
+Quick start
 ==========
 
 First of all, installation is as simple as:
@@ -125,28 +125,31 @@ Features
 
 This implementation of the Digest Authentication scheme uses the **Quality of
 Protection (qop)** optional feature. More specifically, it forces you to use the
-``auth`` variation of it, since it makes the protocol much more secure.
+``auth`` variation of it, since it makes the protocol much more secure. Also, it
+discards the ``nonce`` tokens after half an hour and makes sure they are only
+used from the IP for whom they were created.
 
-On top of that, it discards the ``nonce`` tokens after half an hour,
-automatically giving another one to the user, and it makes sure those tokens are
-only used from the IP for whom they were created.
+Besides authenticating users, Flask Digest also makes it possible for the client
+to authenticate the server. This is done by using the ``Authentication-Info``
+header, as it contains a hash that could only be produced if one knew the
+client's credentials. This header is included on every successful response.
 
-Finally, it prevents you from storing the passwords in plain text, offering
-instead an already hashed form of it when you call the method marked by the
-``register`` decorator.
+Regarding user database security, the ``register`` decorator does not allow you
+to store passwords in plain text, offering instead a digest of the user's
+credentials to the underlying method when it is called.
 
-The result is that, using Flask Digest, you'll be protected against the
+All of this together results in your application being protected against the
 following attacks:
 
 * **Replay**: the request is intercepted and reproduced in the future
 * **Reflection**: attacker repasses the server's challenge to the user
-* **Criptoanalysis**
+* **Cryptanalysis**
 
   * **Chosen plaintext**: malicious server chooses the ``nonce``
   * **Precomputed dictionary**: precomputed version of the above
   * **Batch brute force**: chosen plain text on multiple users at once
 
-**Man-in-the-middle attacks**, ie. intercept and modify requests, are also
+**Man-in-the-middle attacks**, i.e. intercept and modify requests, are also
 prevented regarding the request URIs, but until ``auth-int`` is implemented
 entity bodies CAN be modified. So ``POST`` and ``PUT`` methods are still
 vulnerable.
@@ -159,10 +162,10 @@ still a good idea to encrypt the file in some way. Also, if maintaining multiple
 realms, make sure their names differ, so that a security breach in one doesn't
 affect the other.
 
-To avoid **online dictionary attacks**, ie. a brute force attack using a list of
-common passwords, do not permit your users to choose easy passwords. And to
-avoid **spoofing** tell them not to trust any server that doesn't use Quality of
-Protection or whose ``qop`` value is not ``auth``.
+To avoid **online dictionary attacks**, i.e. a brute force attack using a list
+of common passwords, do not permit your users to choose easy passwords. And to
+avoid **spoofing** do not trust any server that doesn't use Quality of
+Protection and have the clients also authenticates the server.
 
 Changelog
 =========
@@ -176,6 +179,5 @@ What the future holds
 
 * Logging of possible attacks
 * Implementation of ``auth-int``
-* Addition of ``Authentication-Info`` header
 * Per user/resource authentication
 * Support Werkzeug's ``views`` and ``blueprints``
