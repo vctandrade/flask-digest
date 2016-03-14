@@ -19,7 +19,7 @@ following well known protocols.
 .. _RFC 2617: https://www.ietf.org/rfc/rfc2617.txt
 
 Quick start
-==========
+===========
 
 First of all, installation is as simple as:
 
