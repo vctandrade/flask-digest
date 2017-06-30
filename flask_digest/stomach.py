@@ -14,10 +14,10 @@ class Token(object):
     def __init__(self):
         self.ip = request.remote_addr
         self.timer = time()
-        self.nc = 0
+        self.used = set()
 
     def stale(self):
-        return time() - self.timer > 1800
+        return time() - self.timer > 1800 or len(self.used) > 128
 
 class Stomach(object):
 
@@ -86,8 +86,9 @@ class Stomach(object):
         token = self.tokens.get(auth.nonce, None)
 
         if token is None or token.stale(): raise Challenge(self, True)
-        if ip != token.ip or nc <= token.nc: raise Unauthorized()
-        token.nc = nc
+        if ip != token.ip or nc in token.used: raise Unauthorized()
+
+        token.used.add(nc)
 
     def gen_nonce(self):
         while True:
