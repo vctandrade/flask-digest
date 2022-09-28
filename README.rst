@@ -38,7 +38,7 @@ should be protected and mark them accordingly.
 
 All the steps regarding the ``Stomach`` object are done with the use of three
 decorator methods, similar to the ones used by Flask. Those are exemplified
-bellow, where ``myRealm`` is a string of your choosing, used to describe and
+bellow, where ``realm`` is a string of your choosing, used to describe and
 identify your server in a unique fashion:
 
 .. code-block:: python
@@ -47,7 +47,7 @@ identify your server in a unique fashion:
    from flask_digest import Stomach
 
    app = Flask(__name__)
-   stomach = Stomach('myRealm')
+   stomach = Stomach('realm')
 
    db = dict()
 
@@ -92,7 +92,7 @@ also in luck! There's a module called **Requests**, which seamlessly supports
 Digest and will do all the work for you. I *strongly* recommend
 `checking it out`_.
 
-.. _checking it out: http://docs.python-requests.org/en/latest/
+.. _checking it out: https://requests.readthedocs.io/en/latest/
 
 On the other hand, if it's written in another language there's no easy solution
 I can offer. Either you look for another module with that functionality or

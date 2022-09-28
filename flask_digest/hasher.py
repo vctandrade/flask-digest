@@ -1,10 +1,10 @@
-from hashlib import md5
 from flask import request
+from hashlib import md5
 
 def hash_all(*args):
     strings = map(str, args)
-    hashed = md5(':'.join(strings))
-    return hashed.hexdigest()
+    encoded = ':'.join(strings).encode('utf-8')
+    return md5(encoded).hexdigest()
 
 def digest(hA1, hA2):
     auth = request.authorization

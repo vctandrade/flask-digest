@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'Flask-Digest',
-    version = '0.2.1',
+    version = '0.3.0',
 
     author = 'Victor Andrade de Almeida',
     author_email = 'vct.a.almeida@gmail.com',
@@ -13,7 +13,7 @@ setup(
     license = 'MIT',
 
     platforms = ['Platform Independent'],
-    install_requires = ['Flask >= 0.10.1'],
+    install_requires = ['Flask >= 2.2.2'],
     packages = find_packages(),
 
     keywords = ['digest', 'authentication', 'flask'],
@@ -25,7 +25,7 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Operating System :: OS Independent',
-        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: Implementation'
     ]
 )

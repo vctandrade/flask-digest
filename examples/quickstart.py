@@ -2,12 +2,13 @@ from flask import Flask
 from flask_digest import Stomach
 
 app = Flask(__name__)
-stomach = Stomach('myRealm')
+stomach = Stomach('realm')
 
 db = dict()
 
 @stomach.register
 def add_user(username, password):
+    print(username, password)
     db[username] = password
 
 @stomach.access

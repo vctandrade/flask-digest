@@ -1,1 +1,1 @@
-from stomach import Stomach
+from .stomach import Stomach
